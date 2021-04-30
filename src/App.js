@@ -1,12 +1,14 @@
 import './App.css';
 import React, { useState } from 'react';
 import API_KEY from './keys';
-import { Input, Button } from '@material-ui/core';
+import { Input, Button, FormControl, FormLabel, RadioGroup, FormControlLabel } from '@material-ui/core';
+import WeatherDisplay from './WeatherDisplay'
 
 export default function App() {
     //const API_KEY = process.env.REACT_APP_api_key;
-    const [weather, setWeather] = useState(null);
-    const [zipCode, setZipCode] = useState(22904);
+    const [weather, setWeather]     = useState(null);
+    const [zipCode, setZipCode]     = useState(22904);
+    const [isHourly, setIsHourly]   = useState(true);
     //const [lat, setLat] = useState();
     //const [long, setLong] = useState();
 
@@ -91,16 +93,20 @@ export default function App() {
                     variant="contained"
                     onClick={getUserLocation}
                 >User Location</Button>
+
+                
             </div>
         );
     }
 
     console.log(weather);
+    //console.log(weather.current.weather[0].main)
 
     return (
         <div style={{ textAlign: "center" }}>
-
-            <pre>{JSON.stringify(weather,undefined,4)}</pre>
+            <WeatherDisplay weather={weather} isHourly={true}></WeatherDisplay>
+            
         </div>
     );
+    //<pre>{JSON.stringify(weather,undefined,4)}</pre>
 }
