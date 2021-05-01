@@ -95,6 +95,7 @@ export default function App() {
     if (weather === null) {
         return (
             <div style={{ textAlign: "center" }}>
+                <h1>How's the weather?</h1>
                 <Input type="number" value={zipCode} onChange={(event) => {
                     setZipCode(event.target.value);
                 }} />

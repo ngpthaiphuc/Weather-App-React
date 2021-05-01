@@ -4,7 +4,7 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRo
 
 export default function WeatherDisplay(weather) {
 
-    const [isHourly, setIsHourly]   = useState(true);
+    const [isHourly, setIsHourly]   = useState(false);
     const [rows, setRows]           = useState([]);
 
     const useStyles = makeStyles({
@@ -17,7 +17,7 @@ export default function WeatherDisplay(weather) {
         return { name, icon, weather, temp, feels_like };
     }
 
-    console.log(weather);
+    //console.log(weather);
 
     function updateTable(){
         console.log(isHourly);
@@ -35,14 +35,14 @@ export default function WeatherDisplay(weather) {
             table = [createData('Current', weather.weather.current.weather[0].icon, weather.weather.current.weather[0].main, weather.weather.current.temp, weather.weather.current.feels_like)];
             for(i = 0; i < 7; i++){
                 //console.log("Daily: " + i);
-                table.push(createData(`+${i+1} Day`, weather.weather.daily[i].weather[0].icon, weather.weather.daily[i].weather[0].main, weather.weather.daily[i].temp, weather.weather.daily[i].feels_like));
+                table.push(createData(`+${i+1} Day`, weather.weather.daily[i].weather[0].icon, weather.weather.daily[i].weather[0].main, weather.weather.daily[i].temp.day, weather.weather.daily[i].feels_like.day));
             }
         }
         setRows(table);
-        console.log(table);
+        //console.log(table);
     }
     
-    //console.log(rows.length === 0);
+    //Initial set up
     if(rows.length === 0)     updateTable();
     console.log(rows);
 
@@ -60,7 +60,7 @@ export default function WeatherDisplay(weather) {
         createData('+10 Hour', weather.weather.hourly[9].weather[0].icon, weather.weather.hourly[9].weather[0].main, weather.weather.hourly[9].temp, weather.weather.hourly[9].feels_like),
     ];*/
 
-    function addIcon(icon) {
+    /*function addIcon(icon) {
         var src = "http://openweathermap.org/img/wn/" + icon + "@2x.png";
         showImage(src, 276,110, icon);
     }
@@ -72,7 +72,7 @@ export default function WeatherDisplay(weather) {
         img.height = height;
         img.alt = alt;
         document.body.appendChild(img);
-    }
+    }*/
 
     return (
         <div>
@@ -80,7 +80,7 @@ export default function WeatherDisplay(weather) {
                 variant="contained"
                 color={isHourly ? "primary" : "default"}
                 onClick={() => {
-                    setIsHourly(false);
+                    setIsHourly(true);
                     //if(!isHourly)    setIsHourly(!isHourly);
                     updateTable();
                 }}
@@ -89,7 +89,8 @@ export default function WeatherDisplay(weather) {
                 variant="contained"
                 color={isHourly ? "default" : "primary"}
                 onClick={() => {
-                    setIsHourly(true);
+                    setIsHourly(false);
+                    console.log(isHourly);
                     //if(isHourly)   setIsHourly(!isHourly);
                     updateTable();
                 }}
@@ -113,8 +114,10 @@ export default function WeatherDisplay(weather) {
                                     {row.name}
                                 </TableCell>
                                 <TableCell align="right">
-                                    <img src={"http://openweathermap.org/img/wn/" + row.icon + "@2x.png"} />
-
+                                    <img
+                                        src={"http://openweathermap.org/img/wn/" + row.icon + "@2x.png"}
+                                        alt={row.icon}
+                                    />
                                 </TableCell>
                                 <TableCell align="right">{row.weather}</TableCell>
                                 <TableCell align="right">{row.temp}</TableCell>
@@ -126,7 +129,5 @@ export default function WeatherDisplay(weather) {
             </TableContainer>
         </div>
     );
-
-    //{addIcon(row.icon)}
 
 }
