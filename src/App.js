@@ -1,7 +1,7 @@
 import './App.css';
 import React, { useState } from 'react';
 import API_KEY from './keys';
-import { Input, Button, FormControl, FormLabel, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
+import { Input, Button/*, FormControl, FormLabel, FormControlLabel, Radio, RadioGroup*/ } from '@material-ui/core';
 import WeatherDisplay from './WeatherDisplay'
 
 export default function App() {
@@ -9,7 +9,7 @@ export default function App() {
     const [weather, setWeather]     = useState(null);
     const [zipCode, setZipCode]     = useState(22904);
     const [isZipCode, setIsZipCode] = useState(false);
-    const [isHourly, setIsHourly]   = useState(true);
+    
     //const [lat, setLat] = useState();
     //const [long, setLong] = useState();
 
@@ -94,7 +94,7 @@ export default function App() {
 
     if (weather === null) {
         return (
-            <div>
+            <div style={{ textAlign: "center" }}>
                 <Input type="number" value={zipCode} onChange={(event) => {
                     setZipCode(event.target.value);
                 }} />
@@ -106,8 +106,6 @@ export default function App() {
                     variant="contained"
                     onClick={getUserLocation}
                 >User Location</Button>
-
-                
                 
             </div>
         );
@@ -115,29 +113,13 @@ export default function App() {
         setWeather(null);
         fetchOneCallWeather(weather.coord.lat, weather.coord.lon);
     }
-    /*
-    <Button
-        variant="contained"
-        color={isHourly ? "primary" : ""}
-        onClick={() => {
-            setIsHourly(true);
-        }}
-    >Hourly</Button>
-    <Button
-        variant="contained"
-        color={isHourly ? "" : "primary"}
-        onClick={() => {
-            setIsHourly(false);
-        }}
-    >Daily</Button>
-    */
 
     console.log(weather);
     //console.log(weather.coord.lat + " " + weather.coord.lon)
 
     return (
         <div style={{ textAlign: "center" }}>
-            <WeatherDisplay weather={weather} isHourly={isHourly}></WeatherDisplay>        
+            <WeatherDisplay weather={weather}></WeatherDisplay>        
         </div>
     );
     

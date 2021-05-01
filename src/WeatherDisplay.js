@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { /*Button,*/ Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core'
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core'
 
-export default function WeatherDisplay(weather, isHourly) {
+export default function WeatherDisplay(weather) {
+
+    const [isHourly, setIsHourly]   = useState(true);
+    const [rows, setRows]           = useState([]);
 
     const useStyles = makeStyles({
         table: {
@@ -15,22 +18,33 @@ export default function WeatherDisplay(weather, isHourly) {
     }
 
     console.log(weather);
-    
-    const rows = [createData('Current', weather.weather.current.weather[0].icon, weather.weather.current.weather[0].main, weather.weather.current.temp, weather.weather.current.feels_like)];
-    let i;
 
-    if(isHourly){
-        for(i = 0; i < 48; i++){
-            //console.log("Hourly: " + i);
-            rows.push(createData(`+${i+1} Hour`, weather.weather.hourly[i].weather[0].icon, weather.weather.hourly[i].weather[0].main, weather.weather.hourly[i].temp, weather.weather.hourly[i].feels_like));
+    function updateTable(){
+        console.log(isHourly);
+        let table, i;
+        if(isHourly){
+            console.log("Hourly");
+            table = [createData('Current', weather.weather.current.weather[0].icon, weather.weather.current.weather[0].main, weather.weather.current.temp, weather.weather.current.feels_like)];
+            for(i = 0; i < 48; i++){
+                //console.log("Hourly: " + i);
+                table.push(createData(`+${i+1} Hour`, weather.weather.hourly[i].weather[0].icon, weather.weather.hourly[i].weather[0].main, weather.weather.hourly[i].temp, weather.weather.hourly[i].feels_like));
+            }
+
+        } else{
+            console.log("Daily");
+            table = [createData('Current', weather.weather.current.weather[0].icon, weather.weather.current.weather[0].main, weather.weather.current.temp, weather.weather.current.feels_like)];
+            for(i = 0; i < 7; i++){
+                //console.log("Daily: " + i);
+                table.push(createData(`+${i+1} Day`, weather.weather.daily[i].weather[0].icon, weather.weather.daily[i].weather[0].main, weather.weather.daily[i].temp, weather.weather.daily[i].feels_like));
+            }
         }
-    } else{
-        for(i = 0; i < 7; i++){
-            //console.log("Daily: " + i);
-            rows.push(createData(`+${i+1} Day`, weather.weather.daily[i].weather[0].icon, weather.weather.daily[i].weather[0].main, weather.weather.daily[i].temp, weather.weather.daily[i].feels_like));
-        }
+        setRows(table);
+        console.log(table);
     }
-    console.log(isHourly);
+    
+    //console.log(rows.length === 0);
+    if(rows.length === 0)     updateTable();
+    console.log(rows);
 
     /*const rows = [
         createData('Current', weather.weather.current.weather[0].icon, weather.weather.current.weather[0].main, weather.weather.current.temp, weather.weather.current.feels_like),
@@ -46,8 +60,41 @@ export default function WeatherDisplay(weather, isHourly) {
         createData('+10 Hour', weather.weather.hourly[9].weather[0].icon, weather.weather.hourly[9].weather[0].main, weather.weather.hourly[9].temp, weather.weather.hourly[9].feels_like),
     ];*/
 
+    function addIcon(icon) {
+        var src = "http://openweathermap.org/img/wn/" + icon + "@2x.png";
+        showImage(src, 276,110, icon);
+    }
+
+    function showImage(src, width, height, alt) {
+        var img = document.createElement("img");
+        img.src = src;
+        img.width = width;
+        img.height = height;
+        img.alt = alt;
+        document.body.appendChild(img);
+    }
+
     return (
         <div>
+            <Button
+                variant="contained"
+                color={isHourly ? "primary" : "default"}
+                onClick={() => {
+                    setIsHourly(false);
+                    //if(!isHourly)    setIsHourly(!isHourly);
+                    updateTable();
+                }}
+            >Hourly</Button>
+            <Button
+                variant="contained"
+                color={isHourly ? "default" : "primary"}
+                onClick={() => {
+                    setIsHourly(true);
+                    //if(isHourly)   setIsHourly(!isHourly);
+                    updateTable();
+                }}
+            >Daily</Button>
+
             <TableContainer component={Paper}>
                 <Table className={useStyles.table} aria-label="simple table">
                     <TableHead>
@@ -65,7 +112,10 @@ export default function WeatherDisplay(weather, isHourly) {
                                 <TableCell component="th" scope="row">
                                     {row.name}
                                 </TableCell>
-                                <TableCell align="right">{row.icon}</TableCell>
+                                <TableCell align="right">
+                                    <img src={"http://openweathermap.org/img/wn/" + row.icon + "@2x.png"} />
+
+                                </TableCell>
                                 <TableCell align="right">{row.weather}</TableCell>
                                 <TableCell align="right">{row.temp}</TableCell>
                                 <TableCell align="right">{row.feels_like}</TableCell>
@@ -76,5 +126,7 @@ export default function WeatherDisplay(weather, isHourly) {
             </TableContainer>
         </div>
     );
+
+    //{addIcon(row.icon)}
 
 }
