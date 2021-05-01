@@ -4,7 +4,7 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRo
 
 export default function WeatherDisplay(weather) {
 
-    const [isHourly, setIsHourly]   = useState(false);
+    const [isHourly, setIsHourly]   = useState(true);
     const [rows, setRows]           = useState([]);
 
     const useStyles = makeStyles({
@@ -81,6 +81,7 @@ export default function WeatherDisplay(weather) {
                 color={isHourly ? "primary" : "default"}
                 onClick={() => {
                     setIsHourly(true);
+                    console.log("true : " + isHourly);
                     //if(!isHourly)    setIsHourly(!isHourly);
                     updateTable();
                 }}
@@ -90,7 +91,7 @@ export default function WeatherDisplay(weather) {
                 color={isHourly ? "default" : "primary"}
                 onClick={() => {
                     setIsHourly(false);
-                    console.log(isHourly);
+                    console.log("false : " + isHourly);
                     //if(isHourly)   setIsHourly(!isHourly);
                     updateTable();
                 }}
