@@ -1,13 +1,14 @@
 import './App.css';
 import React, { useState } from 'react';
 import API_KEY from './keys';
-import { Input, Button, FormControl, FormLabel, RadioGroup, FormControlLabel } from '@material-ui/core';
+import { Input, Button, FormControl, FormLabel, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import WeatherDisplay from './WeatherDisplay'
 
 export default function App() {
     //const API_KEY = process.env.REACT_APP_api_key;
     const [weather, setWeather]     = useState(null);
     const [zipCode, setZipCode]     = useState(22904);
+    const [isZipCode, setIsZipCode] = useState(false);
     const [isHourly, setIsHourly]   = useState(true);
     //const [lat, setLat] = useState();
     //const [long, setLong] = useState();
@@ -32,6 +33,7 @@ export default function App() {
     //console.log(API_KEY);
 
     const fetchWeather = () => {
+        setIsZipCode(true);
         const url = new URL("https://api.openweathermap.org/data/2.5/weather");
         url.searchParams.append("appid", API_KEY);
         url.searchParams.append("zip", zipCode); //default: Charlottesville
@@ -41,31 +43,27 @@ export default function App() {
                 return resp.json();
             })
             .then((obj) => {
-                if (obj.cod === 200) { //no html errors
+                //if (obj.cod === 200) { //no html errors
                     setWeather(obj);
-                } else {
-                    setWeather(false);
-                }
+                //} else {
+                //    setWeather(false);
+                //}
             });
     }
 
-    const fetchOneCallWeather = (position) => {
+    const fetchOneCallWeather = (latitude, longitude) => {
+        setIsZipCode(false);
         const url = new URL("https://api.openweathermap.org/data/2.5/onecall");
         url.searchParams.append("appid", API_KEY);
-        console.log(position.coords.latitude + ", " + position.coords.longitude);
-        url.searchParams.append("lat", position.coords.latitude);
-        url.searchParams.append("lon", position.coords.longitude);
+        url.searchParams.append("lat", latitude);
+        url.searchParams.append("lon", longitude);
         url.searchParams.append("units", "imperial"); //Fahrenheit
         fetch(url)
             .then((resp) => {
                 return resp.json();
             })
             .then((obj) => {
-                //if (obj.cod === 200) { //no html errors
-                    setWeather(obj);
-                /*} else {
-                    setWeather(false);
-                }*/
+                setWeather(obj);
             });
 
         //console.log(weather);
@@ -73,11 +71,26 @@ export default function App() {
 
     function getUserLocation(){
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(fetchOneCallWeather);
+            navigator.geolocation.getCurrentPosition(positionToLatLong);
         } else {
             console.log("Geolocation is not supported");
         }
     }
+
+    const positionToLatLong = (position) => {
+        console.log(position.coords.latitude + ", " + position.coords.longitude);
+        fetchOneCallWeather(position.coords.latitude, position.coords.longitude);
+    }
+
+
+    /* let value = true;
+    <FormControl component="fieldset">
+        <FormLabel component="legend">Time</FormLabel>
+        <RadioGroup name="time" value={value} onChange={setIsHourly(value)}>
+            <FormControlLabel value={true} control={<Radio />} label="Hourly" />
+            <FormControlLabel value={false} control={<Radio />} label="Daily" />
+        </RadioGroup>
+    </FormControl>*/
 
     if (weather === null) {
         return (
@@ -95,18 +108,38 @@ export default function App() {
                 >User Location</Button>
 
                 
+                
             </div>
         );
+    } else if(isZipCode){
+        setWeather(null);
+        fetchOneCallWeather(weather.coord.lat, weather.coord.lon);
     }
+    /*
+    <Button
+        variant="contained"
+        color={isHourly ? "primary" : ""}
+        onClick={() => {
+            setIsHourly(true);
+        }}
+    >Hourly</Button>
+    <Button
+        variant="contained"
+        color={isHourly ? "" : "primary"}
+        onClick={() => {
+            setIsHourly(false);
+        }}
+    >Daily</Button>
+    */
 
     console.log(weather);
-    //console.log(weather.current.weather[0].main)
+    //console.log(weather.coord.lat + " " + weather.coord.lon)
 
     return (
         <div style={{ textAlign: "center" }}>
-            <WeatherDisplay weather={weather} isHourly={true}></WeatherDisplay>
-            
+            <WeatherDisplay weather={weather} isHourly={isHourly}></WeatherDisplay>        
         </div>
     );
+    
     //<pre>{JSON.stringify(weather,undefined,4)}</pre>
 }

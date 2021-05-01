@@ -1,12 +1,6 @@
-import React, { /*useState*/ } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import { /*Button,*/ Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core'
 
 export default function WeatherDisplay(weather, isHourly) {
 
@@ -20,21 +14,23 @@ export default function WeatherDisplay(weather, isHourly) {
         return { name, icon, weather, temp, feels_like };
     }
 
-    console.log(weather.weather.hourly[0].weather[0].main);
+    console.log(weather);
     
     const rows = [createData('Current', weather.weather.current.weather[0].icon, weather.weather.current.weather[0].main, weather.weather.current.temp, weather.weather.current.feels_like)];
     let i;
 
     if(isHourly){
         for(i = 0; i < 48; i++){
+            //console.log("Hourly: " + i);
             rows.push(createData(`+${i+1} Hour`, weather.weather.hourly[i].weather[0].icon, weather.weather.hourly[i].weather[0].main, weather.weather.hourly[i].temp, weather.weather.hourly[i].feels_like));
         }
     } else{
-        for(i = 0; i < 48; i++){
+        for(i = 0; i < 7; i++){
+            //console.log("Daily: " + i);
             rows.push(createData(`+${i+1} Day`, weather.weather.daily[i].weather[0].icon, weather.weather.daily[i].weather[0].main, weather.weather.daily[i].temp, weather.weather.daily[i].feels_like));
         }
     }
-
+    console.log(isHourly);
 
     /*const rows = [
         createData('Current', weather.weather.current.weather[0].icon, weather.weather.current.weather[0].main, weather.weather.current.temp, weather.weather.current.feels_like),
@@ -51,32 +47,34 @@ export default function WeatherDisplay(weather, isHourly) {
     ];*/
 
     return (
-        <TableContainer component={Paper}>
-            <Table className={useStyles.table} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Time</TableCell>
-                        <TableCell align="right">Icon</TableCell>
-                        <TableCell align="right">Weather</TableCell>
-                        <TableCell align="right">Temp&nbsp;(°F)</TableCell>
-                        <TableCell align="right">Feels Like&nbsp;(°F)</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows.map((row) => (
-                        <TableRow key={row.name}>
-                            <TableCell component="th" scope="row">
-                                {row.name}
-                            </TableCell>
-                            <TableCell align="right">{row.icon}</TableCell>
-                            <TableCell align="right">{row.weather}</TableCell>
-                            <TableCell align="right">{row.temp}</TableCell>
-                            <TableCell align="right">{row.feels_like}</TableCell>
+        <div>
+            <TableContainer component={Paper}>
+                <Table className={useStyles.table} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Time</TableCell>
+                            <TableCell align="right">Icon</TableCell>
+                            <TableCell align="right">Weather</TableCell>
+                            <TableCell align="right">Temp&nbsp;(°F)</TableCell>
+                            <TableCell align="right">Feels Like&nbsp;(°F)</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row) => (
+                            <TableRow key={row.name}>
+                                <TableCell component="th" scope="row">
+                                    {row.name}
+                                </TableCell>
+                                <TableCell align="right">{row.icon}</TableCell>
+                                <TableCell align="right">{row.weather}</TableCell>
+                                <TableCell align="right">{row.temp}</TableCell>
+                                <TableCell align="right">{row.feels_like}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </div>
     );
 
 }
