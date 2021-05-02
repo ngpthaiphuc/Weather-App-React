@@ -9,9 +9,9 @@ export default function App() {
     const [weather, setWeather]     = useState(null);
     const [zipCode, setZipCode]     = useState(22904);
     const [isZipCode, setIsZipCode] = useState(false);
-    
     //const [lat, setLat] = useState();
     //const [long, setLong] = useState();
+    const [testBool, setTestBool]   = useState(true);
 
     /*useEffect(() => {
         const url = new URL("https://api.openweathermap.org/data/2.5/weather");
@@ -82,7 +82,6 @@ export default function App() {
         fetchOneCallWeather(position.coords.latitude, position.coords.longitude);
     }
 
-
     /* let value = true;
     <FormControl component="fieldset">
         <FormLabel component="legend">Time</FormLabel>
@@ -92,22 +91,59 @@ export default function App() {
         </RadioGroup>
     </FormControl>*/
 
+    const changeTestBool = (type) => {
+        if(type === "hour"){
+            setTestBool(true);
+            console.log("Hour: " + testBool);
+        } else if(type === "day"){
+            setTestBool(false);
+            console.log("Day: " + testBool);
+        }
+    }
+
+    //Just use <p> tag to move things to different lines
     if (weather === null) {
         return (
-            <div style={{ textAlign: "center" }}>
-                <h1>How's the weather?</h1>
-                <Input type="number" value={zipCode} onChange={(event) => {
-                    setZipCode(event.target.value);
-                }} />
-                <Button
-                    variant="contained"
-                    onClick={fetchWeather}
-                >Zip Code</Button>
-                <Button
-                    variant="contained"
-                    onClick={getUserLocation}
-                >User Location</Button>
-                
+            <div
+                style={{ textAlign: "center" }}
+                className="row"
+            >
+                <div className="col-sm-6">
+                    <h1>How's the weather?</h1>
+                    <Input type="number" value={zipCode} onChange={(event) => {
+                        setZipCode(event.target.value);
+                    }} />
+                    <Button
+                        variant="contained"
+                        onClick={fetchWeather}
+                    >Zip Code</Button>
+                    <p><Button
+                        variant="contained"
+                        onClick={getUserLocation}
+                    >User Location</Button></p>
+
+                    <p><Button
+                        variant="contained"
+                        color={testBool ? "primary" : "default"}
+                        onClick={() => {
+                            //setTestBool(true);
+                            changeTestBool("hour");
+                            
+                            document.getElementById("test").innerHTML = testBool;
+                        }}
+                    >Hourly</Button>
+                    <Button
+                        variant="contained"
+                        color={testBool ? "default" : "primary"}
+                        onClick={() => {
+                            //setTestBool(false);
+                            changeTestBool("day");
+                            
+                            document.getElementById("test").innerHTML = testBool;
+                        }}
+                    >Daily</Button></p>
+                    <p id="test">true</p>
+                </div>
             </div>
         );
     } else if(isZipCode){
